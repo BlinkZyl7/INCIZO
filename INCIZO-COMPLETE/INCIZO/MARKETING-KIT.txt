@@ -1,0 +1,213 @@
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         HYRO AI PRO — Marketing Copy Kit
+         Ready to paste. Just add your links.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+GUMROAD / WHOP PRODUCT DESCRIPTION
+────────────────────────────────────
+
+HYRO AI PRO — Live Chart Intelligence for Funded Traders
+
+Stop staring at charts guessing what to do.
+
+HYRO AI Pro watches your trading screen every 10 seconds 
+and tells you exactly: Long, Short, or Wait.
+
+It reads your RSI, price action, candle patterns, and 
+key levels — then gives you a full analysis with entry, 
+stop loss, and take profit in seconds.
+
+Built specifically for funded account traders on CLEO 
+(Hydrotrader), TradingView, Binance, and more.
+
+WHAT YOU GET:
+✓ Live AI analysis every 5-60 seconds (you choose)
+✓ Sound + popup alerts when a signal fires
+✓ 10+ pairs: BTC, ETH, SOL, Gold, NAS100 + more
+✓ Trade journal with auto P&L calculation
+✓ Risk & position size calculator
+✓ Challenge progress tracker (daily drawdown, profit target)
+✓ Export trades to CSV
+✓ Works on any chart platform
+✓ Lifetime updates included
+
+ONE-TIME PURCHASE. No monthly fees. Ever.
+
+API cost: ~$0.01 per scan. $5 = 500 scans.
+(Free credits included with new Anthropic account)
+
+Requires: Windows 10/11 + Python (free)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+TWITTER / X POSTS (copy & paste)
+──────────────────────────────────
+
+POST 1 — Launch announcement:
+"I built an AI that watches your chart 24/7 and tells you when to go Long, Short, or Wait.
+
+Every 10 seconds it reads your RSI, price action, and candle patterns.
+
+Built for funded traders on CLEO, TradingView, Binance.
+
+One-time $39. No subscription.
+
+→ [YOUR LINK]"
+
+---
+
+POST 2 — Pain point:
+"Tired of staring at your funded account chart not knowing if you should enter or wait?
+
+I built HYRO AI Pro — it watches your screen every 10 seconds and tells you exactly what to do.
+
+RSI overbought? It warns you.
+Clean short setup? It fires an alert.
+
+$39 once. Yours forever → [YOUR LINK]"
+
+---
+
+POST 3 — Feature highlight:
+"HYRO AI Pro just told me:
+
+BIAS: SHORT
+RSI: 74.6 — OVERBOUGHT ⚠
+ENTRY: $77,350
+SL: $77,750  
+TP: $76,800
+CONFIDENCE: HIGH
+
+That's what it gives you every 10 seconds while you trade.
+
+Get it → [YOUR LINK]"
+
+---
+
+POST 4 — Social proof angle:
+"Passed my Hydrotrader $5K challenge using an AI I built that watches my chart automatically.
+
+It reads RSI, candle patterns, and price levels every 10 seconds.
+
+Sound alert fires when there's a signal. Never miss an entry again.
+
+Selling it for $39 → [YOUR LINK]"
+
+---
+
+POST 5 — Objection handler:
+"'But I can read charts myself'
+
+Sure. But can you:
+- Watch every 10 seconds for hours?
+- Never get emotional about a setup?
+- Calculate exact position size instantly?
+- Track your challenge progress automatically?
+
+HYRO AI Pro can. $39 → [YOUR LINK]"
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+DISCORD MESSAGE (for Hydrotrader / prop firm servers)
+──────────────────────────────────────────────────────
+
+"Hey everyone — I built a tool specifically for funded 
+account traders and wanted to share it here.
+
+HYRO AI Pro watches your CLEO chart every 10 seconds 
+and gives you AI-powered analysis: Bias, RSI read, 
+entry, SL, TP, and confidence level.
+
+It also has:
+- Sound/popup alerts on signals
+- Trade journal with P&L tracking  
+- Risk calculator for exact position sizing
+- Challenge progress tracker
+
+It's a one-time $39 download. No subscription.
+API cost is about $0.01 per scan so very cheap to run.
+
+Works on CLEO, TradingView, Binance — any platform 
+visible on your screen.
+
+Here's the link if anyone wants it: [YOUR LINK]
+
+Happy to answer any questions!"
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+TIKTOK / SHORT VIDEO SCRIPT
+─────────────────────────────
+
+[Screen recording of app running]
+
+"I built an AI that watches my funded account chart 
+for me 24/7.
+
+Every 10 seconds it tells me: Long, Short, or Wait.
+
+Watch this — [show screen] — RSI hits 74, it fires 
+a sound alert and tells me exactly where to short.
+
+Entry price. Stop loss. Take profit. All automated.
+
+It saved me from 3 bad trades in one session.
+
+Selling it for $39 — link in bio."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+PRICING STRATEGY
+─────────────────
+
+Launch price:  $29  (first 50 buyers — create urgency)
+Regular price: $39  (standard)
+Bundle:        $59  (app + 1hr onboarding call)
+
+WHERE TO SELL:
+• Gumroad.com — easiest setup, instant payouts
+• Whop.com — great for trader communities  
+• Lemon Squeezy — good Gumroad alternative
+• Your own website — highest margins
+
+COMMUNITIES TO MARKET IN:
+• Hydrotrader Discord
+• r/Forex and r/CryptoCurrency (be genuine, not spammy)
+• Funded trader Twitter/X communities
+• TikTok (show screen recordings of it working)
+• YouTube Shorts
+
+UPSELL IDEAS:
+• Monthly "signal alerts" Telegram channel ($19/mo)
+• 1-on-1 setup call ($49)
+• Custom version for specific prop firm rules ($99)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+TO-DO BEFORE LAUNCHING
+───────────────────────
+
+□ Test the app on your own machine (INSTALL.bat)
+□ Record a 60-second screen demo video
+□ Create Gumroad account at gumroad.com
+□ Upload: hyro_ai_pro.py, INSTALL.bat, LAUNCH.bat, README.txt
+□ Set price to $29 (launch) → $39 (regular)
+□ Upload landing-page.html to GitHub Pages (free hosting)
+□ Post launch tweet with demo video
+□ Share in Hydrotrader Discord
+□ Post TikTok with screen recording
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Good luck. You've got a real product here. 🚀
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

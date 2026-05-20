@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="INCIZO"/>
+<meta name="theme-color" content="#040608"/>
+<title>INCIZO — Trading Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg:     #040608;
+  --bg2:    #080C10;
+  --bg3:    #0E1318;
+  --bg4:    #141B22;
+  --border: rgba(255,255,255,0.06);
+  --border2:rgba(255,255,255,0.12);
+  --text:   #E8EDF2;
+  --muted:  #3A4450;
+  --muted2: #6A7A88;
+  --green:  #00E5A0;
+  --green2: #00FFB3;
+  --red:    #FF4C6A;
+  --amber:  #FFB547;
+  --blue:   #4DA6FF;
+  --font-d: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-m: 'DM Mono', 'SF Mono', monospace;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { font-size: 16px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-d);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  padding-bottom: calc(70px + var(--safe-bottom));
+  padding-top: var(--safe-top);
+}
+
+::-webkit-scrollbar { display: none; }
+
+/* ── HEADER ── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(4,6,8,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-logo {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-d); font-weight: 700; font-size: 16px;
+  letter-spacing: 0.5px; color: var(--text);
+}
+.live-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--muted);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.live-dot.active {
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+.header-right { display: flex; align-items: center; gap: 8px; }
+.header-badge {
+  font-family: var(--font-d); font-size: 11px; font-weight: 500;
+  padding: 4px 10px; border-radius: 4px;
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--muted2); letter-spacing: 0.3px;
+}
+.header-badge.live { background: rgba(0,229,160,0.08); border-color: rgba(0,229,160,0.2); color: var(--green); }
+.reset-btn {
+  background: none; border: 1px solid var(--border);
+  color: var(--muted2); font-family: var(--font-d); font-size: 11px; font-weight: 500;
+  padding: 4px 10px; border-radius: 4px; cursor: pointer;
+}
+
+/* ── CHALLENGE PROGRESS ── */
+.challenge-bar {
+  padding: 10px 16px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.challenge-top {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.challenge-label { font-family: var(--font-m); font-size: 10px; color: var(--muted2); letter-spacing: 1px; }
+.challenge-pct { font-family: var(--font-m); font-size: 10px; color: var(--green); }
+.progress-track { height: 3px; background: var(--bg4); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--green), var(--green2)); transition: width 0.8s cubic-bezier(.4,0,.2,1); box-shadow: 0 0 8px rgba(0,229,160,0.4); }
+
+/* ── CONTENT ── */
+.content { padding: 16px; }
+
+/* ── ALERTS ── */
+.alert {
+  display: none; align-items: center; gap: 10px;
+  padding: 12px 14px; border-radius: 10px;
+  font-family: var(--font-m); font-size: 12px;
+  margin-bottom: 14px; border: 1px solid;
+  animation: slideDown 0.3s ease;
+}
+@keyframes slideDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+.alert.warning { background: rgba(255,181,71,0.08); border-color: rgba(255,181,71,0.25); color: var(--amber); }
+.alert.danger  { background: rgba(255,76,106,0.08);  border-color: rgba(255,76,106,0.25);  color: var(--red); }
+
+/* ── METRICS ── */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.metric-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.2s;
+}
+.metric-card::after {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: var(--green); opacity: 0;
+  transition: opacity 0.2s;
+}
+.metric-card:active::after { opacity: 1; }
+.metric-label {
+  font-family: var(--font-d); font-size: 11px;
+  font-weight: 500; letter-spacing: 0.3px;
+  text-transform: uppercase; color: var(--muted2); margin-bottom: 6px;
+}
+.metric-value {
+  font-family: var(--font-m); font-size: 22px;
+  font-weight: 500; color: var(--text);
+  letter-spacing: -0.5px;
+}
+.metric-value.green { color: var(--green); }
+.metric-value.red   { color: var(--red); }
+.metric-value.amber { color: var(--amber); }
+.metric-sub { font-family: var(--font-d); font-size: 11px; color: var(--muted); margin-top: 3px; font-weight: 400; }
+
+/* ── PROGRESS CARDS ── */
+.progress-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.progress-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px;
+}
+.progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.progress-name { font-family: var(--font-d); font-size: 12px; font-weight: 600; letter-spacing: 0.3px; color: var(--muted2); text-transform: uppercase; }
+.progress-val { font-family: var(--font-m); font-size: 11px; color: var(--text); }
+.p-track { height: 5px; background: var(--bg4); border-radius: 99px; overflow: hidden; margin-bottom: 6px; }
+.p-fill { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+.p-fill.profit { background: linear-gradient(90deg, var(--green), var(--green2)); box-shadow: 0 0 10px rgba(0,229,160,0.4); }
+.p-fill.safe   { background: var(--green); }
+.p-fill.warn   { background: var(--amber); }
+.p-fill.danger { background: var(--red); }
+.p-ticks { display: flex; justify-content: space-between; font-family: var(--font-m); font-size: 9px; color: var(--muted); }
+
+/* ── RULES ROW ── */
+.rules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
+.rule-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+.rule-icon { font-size: 16px; margin-bottom: 6px; }
+.rule-name { font-family: var(--font-d); font-size: 10px; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase; color: var(--muted2); margin-bottom: 3px; }
+.rule-val { font-family: var(--font-m); font-size: 15px; font-weight: 500; color: var(--text); }
+.rule-sub { font-family: var(--font-d); font-size: 11px; color: var(--muted); margin-top: 2px; font-weight: 400; }
+
+/* ── SECTION CARD ── */
+.card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; margin-bottom: 14px;
+}
+.card-header {
+  padding: 14px 16px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-title {
+  font-family: var(--font-m); font-size: 10px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted2); display: flex; align-items: center; gap: 8px;
+}
+.card-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
+.card-badge { font-family: var(--font-m); font-size: 10px; color: var(--muted); }
+.card-body { padding: 14px 16px; }
+
+/* ── CHART ── */
+.chart-wrap { position: relative; width: 100%; height: 180px; }
+.chart-legend { display: flex; gap: 14px; margin-bottom: 10px; }
+.leg { display: flex; align-items: center; gap: 5px; font-family: var(--font-d); font-size: 11px; font-weight: 500; color: var(--muted2); }
+.leg-dot { width: 8px; height: 8px; border-radius: 2px; }
+.chart-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.chart-stat { text-align: center; }
+.chart-stat-val { font-family: var(--font-m); font-size: 16px; font-weight: 500; color: var(--text); }
+.chart-stat-label { font-family: var(--font-d); font-size: 11px; font-weight: 500; color: var(--muted); margin-top: 2px; letter-spacing: 0.3px; text-transform: uppercase; }
+
+/* ── FORM ── */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.form-full { margin-bottom: 10px; }
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-group label { font-family: var(--font-d); font-size: 11px; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase; color: var(--muted2); }
+.form-group input, .form-group select {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 11px 12px;
+  font-family: var(--font-d); font-size: 15px; font-weight: 400; color: var(--text);
+  outline: none; transition: border-color 0.2s;
+  -webkit-appearance: none; appearance: none;
+  width: 100%;
+}
+.form-group input:focus, .form-group select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(0,229,160,0.08);
+}
+.form-group select option { background: var(--bg3); }
+.btn-primary {
+  width: 100%; background: var(--green); color: #000;
+  font-family: var(--font-d); font-weight: 700; font-size: 15px;
+  padding: 13px; border-radius: 10px; border: none; cursor: pointer;
+  transition: all 0.15s; letter-spacing: 0.2px;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-primary:active { background: var(--green2); transform: scale(0.98); }
+
+/* ── TRADE TABLE ── */
+.trade-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { width: 100%; border-collapse: collapse; font-family: var(--font-d); font-size: 13px; min-width: 500px; }
+thead th {
+  text-align: left; padding: 10px 12px;
+  font-size: 11px; letter-spacing: 0.3px; text-transform: uppercase;
+  color: var(--muted); font-weight: 600;
+  border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:active { background: rgba(255,255,255,0.02); }
+tbody td { padding: 12px; color: var(--text); white-space: nowrap; }
+.badge { display: inline-block; font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 600; letter-spacing: 0.3px; font-family: var(--font-d); }
+.badge-win  { background: rgba(0,229,160,0.1);  color: var(--green); border: 1px solid rgba(0,229,160,0.2); }
+.badge-loss { background: rgba(255,76,106,0.1);  color: var(--red);   border: 1px solid rgba(255,76,106,0.2); }
+.badge-open { background: rgba(77,166,255,0.1);  color: var(--blue);  border: 1px solid rgba(77,166,255,0.2); }
+.pnl-pos { color: var(--green); font-weight: 600; }
+.pnl-neg { color: var(--red);   font-weight: 600; }
+.dir-long  { color: var(--green); font-weight: 600; }
+.dir-short { color: var(--red);   font-weight: 600; }
+.del-btn { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 14px; padding: 4px 6px; border-radius: 4px; }
+.del-btn:active { color: var(--red); background: rgba(255,76,106,0.1); }
+
+/* ── EMPTY STATE ── */
+.empty { text-align: center; padding: 2.5rem 1rem; color: var(--muted); }
+.empty-icon { font-size: 28px; margin-bottom: 8px; }
+.empty-text { font-family: var(--font-m); font-size: 11px; }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(8,12,16,0.95);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: stretch;
+  height: calc(60px + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+}
+.nav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px; cursor: pointer; border: none;
+  background: none; color: var(--muted);
+  font-family: var(--font-d); font-size: 10px; font-weight: 600;
+  letter-spacing: 0.3px; padding: 8px 4px;
+  transition: color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-item.active { color: var(--green); }
+.nav-icon { font-size: 18px; line-height: 1; }
+
+/* ── TABS ── */
+.tab { display: none; }
+.tab.active { display: block; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(10px);
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 10px 20px;
+  font-family: var(--font-d); font-size: 13px; font-weight: 500; color: var(--text);
+  z-index: 1000; opacity: 0; pointer-events: none;
+  transition: all 0.25s ease; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.success { border-color: rgba(0,229,160,0.3); color: var(--green); }
+.toast.error   { border-color: rgba(255,76,106,0.3); color: var(--red); }
+
+/* ── DESKTOP ENHANCEMENTS ── */
+@media (min-width: 768px) {
+  body { max-width: 480px; margin: 0 auto; }
+  .metrics { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-logo">
+    <div class="live-dot" id="live-dot"></div>
+    INCIZO
+  </div>
+  <div class="header-right">
+    <span class="header-badge live" id="clock">--:--</span>
+    <button class="reset-btn" onclick="confirmReset()">Reset</button>
+  </div>
+</header>
+
+<!-- CHALLENGE PROGRESS -->
+<div class="challenge-bar">
+  <div class="challenge-top">
+    <span class="challenge-label">🎯 Challenge Progress</span>
+    <span class="challenge-pct" id="cp-pct">0% · $0 / $500</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="cp-bar" style="width:0%"></div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content">
+
+  <!-- ALERTS -->
+  <div id="alert-warn" class="alert warning">⚠️ Daily limit at 75% — max 1 more loss today</div>
+  <div id="alert-breach" class="alert danger">🚨 Daily limit hit — stop trading today</div>
+
+  <!-- TAB: WATCH -->
+  <div class="tab active" id="tab-watch">
+
+    <!-- Metrics -->
+    <div class="metrics">
+      <div class="metric-card">
+        <div class="metric-label">Total P&L</div>
+        <div class="metric-value" id="m-pnl">$0.00</div>
+        <div class="metric-sub" id="m-pnl-sub">0 trades</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Today</div>
+        <div class="metric-value" id="m-today">$0.00</div>
+        <div class="metric-sub" id="m-today-sub">no trades</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Win Rate</div>
+        <div class="metric-value" id="m-wr">—</div>
+        <div class="metric-sub" id="m-wr-sub">no data</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Avg R:R</div>
+        <div class="metric-value" id="m-rr">—</div>
+        <div class="metric-sub">target 1:2</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">To Target</div>
+        <div class="metric-value" id="m-left">—</div>
+        <div class="metric-sub">trades left</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Session</div>
+        <div class="metric-value" id="m-session" style="font-size:14px">00:00</div>
+        <div class="metric-sub">time active</div>
+      </div>
+    </div>
+
+    <!-- Progress Bars -->
+    <div class="progress-cards">
+      <div class="progress-card">
+        <div class="progress-header">
+          <span class="progress-name">Profit Target</span>
+          <span class="progress-val" id="pp-val">$0 / $500</span>
+        </div>
+        <div class="p-track"><div class="p-fill profit" id="pp-bar" style="width:0%"></div></div>
+        <div class="p-ticks"><span>$0</span><span>$125</span><span>$250</span><span>$375</span><span>$500 ✓</span></div>
+      </div>
+      <div class="progress-card">
+        <div class="progress-header">
+          <span class="progress-name">Daily Drawdown</span>
+          <span class="progress-val" id="dd-val">$0 / $200</span>
+        </div>
+        <div class="p-track"><div class="p-fill safe" id="dd-bar" style="width:0%"></div></div>
+        <div class="p-ticks"><span>$0</span><span>$50</span><span>$100</span><span>$150</span><span>$200 ⛔</span></div>
+      </div>
+    </div>
+
+    <!-- Rules -->
+    <div class="rules">
+      <div class="rule-card"><div class="rule-icon">💰</div><div class="rule-name">Target</div><div class="rule-val">$500</div><div class="rule-sub">10% of $5K</div></div>
+      <div class="rule-card"><div class="rule-icon">📅</div><div class="rule-name">Daily Limit</div><div class="rule-val">$200</div><div class="rule-sub">4% max loss</div></div>
+      <div class="rule-card"><div class="rule-icon">🔒</div><div class="rule-name">Max DD</div><div class="rule-val">$300</div><div class="rule-sub">Floor: $4,700</div></div>
+      <div class="rule-card"><div class="rule-icon">⚡</div><div class="rule-name">Risk/Trade</div><div class="rule-val">$50</div><div class="rule-sub">1% · 0.1 BTC</div></div>
+    </div>
+
+    <!-- Chart -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="card-dot"></div>Cumulative P&L</div>
+      </div>
+      <div class="card-body">
+        <div class="chart-legend">
+          <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>P&L</div>
+          <div class="leg"><div class="leg-dot" style="background:var(--amber);opacity:.6"></div>$500 Target</div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="pnlChart" role="img" aria-label="Cumulative P&L chart">No data yet.</canvas>
+        </div>
+        <div class="chart-stats">
+          <div class="chart-stat">
+            <div class="chart-stat-val pnl-pos" id="s-best">—</div>
+            <div class="chart-stat-label">BEST TRADE</div>
+          </div>
+          <div class="chart-stat">
+            <div class="chart-stat-val pnl-neg" id="s-worst">—</div>
+            <div class="chart-stat-label">WORST TRADE</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAB: LOG -->
+  <div class="tab" id="tab-log">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="card-dot"></div>Log a Trade</div>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Pair</label>
+            <select id="f-pair">
+              <option>BTC/USD</option><option>ETH/USD</option>
+              <option>SOL/USD</option><option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Direction</label>
+            <select id="f-dir">
+              <option value="Long">Long ↑</option>
+              <option value="Short">Short ↓</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Entry $</label>
+            <input type="number" id="f-entry" placeholder="78300" inputmode="decimal"/>
+          </div>
+          <div class="form-group">
+            <label>Exit $</label>
+            <input type="number" id="f-exit" placeholder="77200" inputmode="decimal"/>
+          </div>
+          <div class="form-group">
+            <label>Size (BTC)</label>
+            <input type="number" id="f-size" placeholder="0.1" value="0.1" step="0.01" inputmode="decimal"/>
+          </div>
+          <div class="form-group">
+            <label>Result</label>
+            <select id="f-result">
+              <option value="Win">Win ✓</option>
+              <option value="Loss">Loss ✗</option>
+              <option value="Open">Open →</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-full">
+          <div class="form-group">
+            <label>Notes</label>
+            <input type="text" id="f-notes" placeholder="e.g. clean breakout, overbought RSI"/>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="addTrade()">+ Add Trade</button>
+      </div>
+    </div>
+
+    <!-- Trade Log -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="card-dot"></div>Trade Log</div>
+        <span class="card-badge" id="trade-count">0 trades</span>
+      </div>
+      <div class="trade-table-wrap">
+        <div id="table-body">
+          <div class="empty">
+            <div class="empty-icon">📋</div>
+            <div class="empty-text">No trades yet — log your first above</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: RISK -->
+  <div class="tab" id="tab-risk">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="card-dot"></div>Risk Calculator</div>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Account $</label>
+            <input type="number" id="rc-account" value="5000" inputmode="decimal"/>
+          </div>
+          <div class="form-group">
+            <label>Risk %</label>
+            <input type="number" id="rc-risk" value="1" inputmode="decimal"/>
+          </div>
+          <div class="form-group">
+            <label>Entry $</label>
+            <input type="number" id="rc-entry" placeholder="77400" inputmode="decimal"/>
+          </div>
+          <div class="form-group">
+            <label>Stop Loss $</label>
+            <input type="number" id="rc-sl" placeholder="76900" inputmode="decimal"/>
+          </div>
+          <div class="form-group">
+            <label>Take Profit $</label>
+            <input type="number" id="rc-tp" placeholder="78200" inputmode="decimal"/>
+          </div>
+          <div class="form-group">
+            <label>Direction</label>
+            <select id="rc-dir">
+              <option value="Long">Long ↑</option>
+              <option value="Short">Short ↓</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="calcRisk()">Calculate</button>
+      </div>
+    </div>
+
+    <div class="card" id="risk-result-card" style="display:none">
+      <div class="card-header">
+        <div class="card-title"><div class="card-dot"></div>Results</div>
+      </div>
+      <div class="card-body" id="risk-result"></div>
+    </div>
+  </div>
+
+  <!-- TAB: SETTINGS -->
+  <div class="tab" id="tab-settings">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="card-dot"></div>Account Settings</div>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Account Size $</label>
+            <input type="number" id="s-account" value="5000" inputmode="decimal"/>
+          </div>
+          <div class="form-group">
+            <label>Risk % / Trade</label>
+            <input type="number" id="s-risk" value="1" inputmode="decimal"/>
+          </div>
+          <div class="form-group">
+            <label>Daily Limit %</label>
+            <input type="number" id="s-daily" value="4" inputmode="decimal"/>
+          </div>
+          <div class="form-group">
+            <label>Profit Target %</label>
+            <input type="number" id="s-target" value="10" inputmode="decimal"/>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="saveSettings()">Save Settings</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="card-dot"></div>About INCIZO</div>
+      </div>
+      <div class="card-body">
+        <div style="font-family:var(--font-m); font-size:11px; color:var(--muted2); line-height:1.8;">
+          <div style="color:var(--green); font-size:14px; font-weight:700; margin-bottom:8px; letter-spacing:2px;">INCIZO v1.0</div>
+          <div>Cut through the noise.</div>
+          <br/>
+          <div style="color:var(--muted);">Built for funded crypto traders.</div>
+          <div style="color:var(--muted);">BTC/USD · 5M Scalping · CLEO Platform</div>
+          <br/>
+          <div>Account: <span style="color:var(--text)" id="about-account">$5,000</span></div>
+          <div>Target: <span style="color:var(--green)" id="about-target">$500 (10%)</span></div>
+          <div>Max DD: <span style="color:var(--red)" id="about-dd">$300 (6%)</span></div>
+          <br/>
+          <div style="color:var(--muted);">Data stored locally in your browser.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="switchTab('watch', this)">
+    <span class="nav-icon">📊</span>
+    <span>DASHBOARD</span>
+  </button>
+  <button class="nav-item" onclick="switchTab('log', this)">
+    <span class="nav-icon">📓</span>
+    <span>LOG</span>
+  </button>
+  <button class="nav-item" onclick="switchTab('risk', this)">
+    <span class="nav-icon">🧮</span>
+    <span>RISK</span>
+  </button>
+  <button class="nav-item" onclick="switchTab('settings', this)">
+    <span class="nav-icon">⚙️</span>
+    <span>SETTINGS</span>
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────
+let trades = JSON.parse(localStorage.getItem('incizo_trades') || '[]');
+let settings = JSON.parse(localStorage.getItem('incizo_settings') || JSON.stringify({
+  account: 5000, risk: 1, daily: 4, target: 10
+}));
+let chart = null;
+let sessionStart = Date.now();
+
+// ── CLOCK ─────────────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toUTCString().slice(17,22) + ' UTC';
+  const elapsed = Math.floor((Date.now() - sessionStart) / 1000);
+  const m = String(Math.floor(elapsed / 60)).padStart(2,'0');
+  const s = String(elapsed % 60).padStart(2,'0');
+  document.getElementById('m-session').textContent = m + ':' + s;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── TAB SWITCH ────────────────────────────────────────────────
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  el.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
+function toast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type;
+  setTimeout(() => t.classList.add('show'), 10);
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── HELPERS ───────────────────────────────────────────────────
+function today() { return new Date().toISOString().slice(0,10); }
+function save() { localStorage.setItem('incizo_trades', JSON.stringify(trades)); }
+function fmt(n) { return (n >= 0 ? '+' : '') + '$' + Math.abs(n).toFixed(2); }
+
+// ── ADD TRADE ─────────────────────────────────────────────────
+function addTrade() {
+  const pair   = document.getElementById('f-pair').value;
+  const dir    = document.getElementById('f-dir').value;
+  const entry  = parseFloat(document.getElementById('f-entry').value) || 0;
+  const exit   = parseFloat(document.getElementById('f-exit').value) || 0;
+  const size   = parseFloat(document.getElementById('f-size').value) || 0.1;
+  const result = document.getElementById('f-result').value;
+  const notes  = document.getElementById('f-notes').value.trim();
+
+  let pnl = 0;
+  if (entry && exit) {
+    pnl = dir === 'Long' ? (exit - entry) * size : (entry - exit) * size;
+  } else if (result === 'Win')  { pnl =  settings.account * settings.risk / 100 * 2; }
+  else if (result === 'Loss') { pnl = -settings.account * settings.risk / 100; }
+  pnl = parseFloat(pnl.toFixed(2));
+
+  const rr = (entry && exit && result !== 'Open')
+    ? Math.abs(pnl / (settings.account * settings.risk / 100)).toFixed(2) : null;
+
+  trades.push({ id: Date.now(), date: today(), pair, dir, entry, exit, size, result, pnl, rr, notes });
+  save();
+
+  document.getElementById('f-entry').value = '';
+  document.getElementById('f-exit').value = '';
+  document.getElementById('f-notes').value = '';
+
+  toast(result === 'Win' ? '✓ Win logged!' : result === 'Loss' ? '✗ Loss logged' : '→ Open trade logged',
+        result === 'Win' ? 'success' : result === 'Loss' ? 'error' : '');
+  render();
+}
+
+// ── DELETE TRADE ──────────────────────────────────────────────
+function deleteTrade(id) {
+  trades = trades.filter(t => t.id !== id);
+  save(); toast('Trade removed'); render();
+}
+
+// ── RESET ─────────────────────────────────────────────────────
+function confirmReset() {
+  if (!trades.length || confirm('Reset all trade data?')) {
+    trades = []; save(); render(); toast('Dashboard reset');
+  }
+}
+
+// ── RENDER ────────────────────────────────────────────────────
+function render() {
+  const closed   = trades.filter(t => t.result !== 'Open');
+  const wins     = closed.filter(t => t.result === 'Win');
+  const losses   = closed.filter(t => t.result === 'Loss');
+  const totalPnl = trades.reduce((s,t) => s + t.pnl, 0);
+  const todayTrades = trades.filter(t => t.date === today());
+  const todayPnl = todayTrades.reduce((s,t) => s + t.pnl, 0);
+  const todayLoss = Math.abs(todayTrades.filter(t=>t.pnl<0).reduce((s,t)=>s+t.pnl,0));
+  const winRate  = closed.length ? Math.round(wins.length/closed.length*100) : null;
+  const rrVals   = trades.filter(t=>t.rr).map(t=>parseFloat(t.rr));
+  const avgRR    = rrVals.length ? (rrVals.reduce((a,b)=>a+b,0)/rrVals.length).toFixed(1) : null;
+  const pnlVals  = trades.map(t=>t.pnl);
+  const best     = pnlVals.length ? Math.max(...pnlVals) : null;
+  const worst    = pnlVals.length ? Math.min(...pnlVals) : null;
+  const target   = settings.account * settings.target / 100;
+  const dailyLim = settings.account * settings.daily / 100;
+  const remaining = Math.max(0, target - totalPnl);
+  const tradesLeft = avgRR ? Math.ceil(remaining / (settings.account * settings.risk / 100 * 2)) : null;
+
+  // Metrics
+  const pnlEl = document.getElementById('m-pnl');
+  pnlEl.textContent = fmt(totalPnl);
+  pnlEl.className = 'metric-value' + (totalPnl>0?' green':totalPnl<0?' red':'');
+  document.getElementById('m-pnl-sub').textContent = trades.length + ' trade' + (trades.length!==1?'s':'');
+
+  const todayEl = document.getElementById('m-today');
+  todayEl.textContent = fmt(todayPnl);
+  todayEl.className = 'metric-value' + (todayPnl>0?' green':todayPnl<0?' red':'');
+  document.getElementById('m-today-sub').textContent = todayTrades.length + ' today';
+
+  const wrEl = document.getElementById('m-wr');
+  wrEl.textContent = winRate !== null ? winRate+'%' : '—';
+  wrEl.className = 'metric-value' + (winRate>=50?' green':winRate!==null?' amber':'');
+  document.getElementById('m-wr-sub').textContent = wins.length+'W / '+losses.length+'L';
+
+  const rrEl = document.getElementById('m-rr');
+  rrEl.textContent = avgRR ? '1:'+avgRR : '—';
+  rrEl.className = 'metric-value' + (parseFloat(avgRR)>=2?' green':avgRR?' amber':'');
+
+  document.getElementById('m-left').textContent = tradesLeft ? '~'+tradesLeft : '—';
+
+  // Challenge bar
+  const cpPct = Math.min(100, Math.max(0, (totalPnl/target)*100));
+  document.getElementById('cp-pct').textContent = Math.round(cpPct)+'% · $'+Math.max(0,totalPnl).toFixed(0)+' / $'+target.toFixed(0);
+  document.getElementById('cp-bar').style.width = cpPct+'%';
+
+  // Profit progress
+  document.getElementById('pp-val').textContent = '$'+Math.max(0,totalPnl).toFixed(0)+' / $'+target.toFixed(0);
+  document.getElementById('pp-bar').style.width = cpPct+'%';
+
+  // DD progress
+  const ddPct = Math.min(100, (todayLoss/dailyLim)*100);
+  document.getElementById('dd-val').textContent = '$'+todayLoss.toFixed(0)+' / $'+dailyLim.toFixed(0)+' today';
+  const ddBar = document.getElementById('dd-bar');
+  ddBar.style.width = ddPct+'%';
+  ddBar.className = 'p-fill ' + (ddPct>=100?'danger':ddPct>=75?'warn':'safe');
+
+  // Alerts
+  document.getElementById('alert-warn').style.display = ddPct>=75&&ddPct<100?'flex':'none';
+  document.getElementById('alert-breach').style.display = ddPct>=100?'flex':'none';
+
+  // Live dot
+  document.getElementById('live-dot').classList.toggle('active', trades.length > 0);
+
+  // Best/worst
+  document.getElementById('s-best').textContent = best!==null ? fmt(best) : '—';
+  document.getElementById('s-worst').textContent = worst!==null ? fmt(worst) : '—';
+
+  renderChart(totalPnl);
+  renderTable();
+  updateAbout();
+}
+
+// ── CHART ─────────────────────────────────────────────────────
+function renderChart(totalPnl) {
+  const canvas = document.getElementById('pnlChart');
+  if (chart) { chart.destroy(); chart = null; }
+  if (!trades.length) return;
+
+  let running = 0;
+  const labels = ['Start'];
+  const data = [0];
+  trades.forEach((t,i) => {
+    running += t.pnl;
+    labels.push('T'+(i+1));
+    data.push(parseFloat(running.toFixed(2)));
+  });
+
+  const target = settings.account * settings.target / 100;
+  const color = totalPnl >= 0 ? '#00E5A0' : '#FF4C6A';
+  chart = new Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'P&L', data,
+          borderColor: color,
+          backgroundColor: totalPnl>=0?'rgba(0,229,160,0.06)':'rgba(255,76,106,0.06)',
+          fill: true, tension: 0.35,
+          pointRadius: 4, pointBackgroundColor: color,
+          pointBorderColor: '#040608', pointBorderWidth: 2, borderWidth: 2
+        },
+        {
+          label: 'Target', data: labels.map(()=>target),
+          borderColor: 'rgba(255,181,71,0.35)',
+          borderDash: [5,4], borderWidth: 1.5,
+          pointRadius: 0, fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#141B22',
+          borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
+          titleColor: '#5A6470', bodyColor: '#E8EDF2',
+          bodyFont: { family: 'Space Mono', size: 11 },
+          callbacks: { label: ctx => ' ' + (ctx.parsed.y>=0?'+':'') + '$' + ctx.parsed.y.toFixed(2) }
+        }
+      },
+      scales: {
+        y: {
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { color: '#3A4450', font: { family: 'Space Mono', size: 9 }, callback: v=>'$'+v }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: '#3A4450', font: { family: 'Space Mono', size: 9 } }
+        }
+      }
+    }
+  });
+}
+
+// ── TABLE ─────────────────────────────────────────────────────
+function renderTable() {
+  const body = document.getElementById('table-body');
+  document.getElementById('trade-count').textContent = trades.length + ' trade' + (trades.length!==1?'s':'');
+
+  if (!trades.length) {
+    body.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No trades logged yet</div></div>';
+    return;
+  }
+
+  const rows = [...trades].reverse().map(t => {
+    const badge = t.result==='Win'
+      ? '<span class="badge badge-win">WIN</span>'
+      : t.result==='Loss'
+      ? '<span class="badge badge-loss">LOSS</span>'
+      : '<span class="badge badge-open">OPEN</span>';
+    const pnlStr = (t.pnl>=0?'+':'') + '$' + t.pnl.toFixed(2);
+    const pnlClass = t.pnl>0?'pnl-pos':t.pnl<0?'pnl-neg':'';
+    const dirClass = t.dir==='Long'?'dir-long':'dir-short';
+    return `<tr>
+      <td>${t.date.slice(5)}</td>
+      <td>${t.pair}</td>
+      <td class="${dirClass}">${t.dir.toUpperCase()}</td>
+      <td>${badge}</td>
+      <td class="${pnlClass}">${pnlStr}</td>
+      <td>${t.rr?'1:'+t.rr:'—'}</td>
+      <td><button class="del-btn" onclick="deleteTrade(${t.id})">✕</button></td>
+    </tr>`;
+  }).join('');
+
+  body.innerHTML = `<div class="trade-table-wrap"><table>
+    <thead><tr><th>Date</th><th>Pair</th><th>Dir</th><th>Result</th><th>P&L</th><th>R:R</th><th></th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
+}
+
+// ── RISK CALC ─────────────────────────────────────────────────
+function calcRisk() {
+  const account = parseFloat(document.getElementById('rc-account').value)||0;
+  const risk    = parseFloat(document.getElementById('rc-risk').value)||1;
+  const entry   = parseFloat(document.getElementById('rc-entry').value)||0;
+  const sl      = parseFloat(document.getElementById('rc-sl').value)||0;
+  const tp      = parseFloat(document.getElementById('rc-tp').value)||0;
+  const dir     = document.getElementById('rc-dir').value;
+
+  if (!entry || !sl) { toast('Enter entry and SL first', 'error'); return; }
+
+  const riskAmt = account * risk / 100;
+  const slDist  = Math.abs(entry - sl);
+  const size    = slDist > 0 ? (riskAmt / slDist).toFixed(4) : 0;
+  const reward  = tp ? Math.abs(tp - entry) * parseFloat(size) : 0;
+  const rr      = tp && slDist > 0 ? (Math.abs(tp - entry) / slDist).toFixed(2) : null;
+
+  const rrColor = rr >= 2 ? 'var(--green)' : rr >= 1.5 ? 'var(--amber)' : 'var(--red)';
+  const rrWarn  = rr < 1.5 ? '<div style="color:var(--amber);margin-top:8px;font-size:11px;">⚠ R:R below 1.5 — reconsider trade</div>' :
+                  rr >= 2  ? '<div style="color:var(--green);margin-top:8px;font-size:11px;">✓ Good R:R — meets funded account standards</div>' : '';
+
+  document.getElementById('risk-result').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-family:var(--font-m);font-size:12px;">
+      <div><div style="color:var(--muted2);font-size:9px;letter-spacing:1px;margin-bottom:4px;">POSITION SIZE</div><div style="font-size:22px;font-weight:700;color:var(--green)">${size}</div><div style="font-size:9px;color:var(--muted)">BTC</div></div>
+      <div><div style="color:var(--muted2);font-size:9px;letter-spacing:1px;margin-bottom:4px;">RISK AMOUNT</div><div style="font-size:22px;font-weight:700;color:var(--amber)">$${riskAmt.toFixed(2)}</div><div style="font-size:9px;color:var(--muted)">${risk}% of account</div></div>
+      ${tp ? `<div><div style="color:var(--muted2);font-size:9px;letter-spacing:1px;margin-bottom:4px;">REWARD</div><div style="font-size:22px;font-weight:700;color:var(--green)">$${reward.toFixed(2)}</div></div>` : ''}
+      ${rr ? `<div><div style="color:var(--muted2);font-size:9px;letter-spacing:1px;margin-bottom:4px;">R:R RATIO</div><div style="font-size:22px;font-weight:700;color:${rrColor}">1:${rr}</div></div>` : ''}
+    </div>
+    ${rrWarn}
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-family:var(--font-m);font-size:11px;color:var(--muted2);line-height:1.8;">
+      <div>Direction: <span style="color:var(--text)">${dir}</span></div>
+      <div>Entry: <span style="color:var(--text)">$${entry.toLocaleString()}</span></div>
+      <div>Stop Loss: <span style="color:var(--red)">$${sl.toLocaleString()}</span></div>
+      ${tp ? `<div>Take Profit: <span style="color:var(--green)">$${tp.toLocaleString()}</span></div>` : ''}
+    </div>`;
+
+  document.getElementById('risk-result-card').style.display = 'block';
+  toast('Calculated!', 'success');
+}
+
+// ── SETTINGS ─────────────────────────────────────────────────
+function saveSettings() {
+  settings.account = parseFloat(document.getElementById('s-account').value)||5000;
+  settings.risk    = parseFloat(document.getElementById('s-risk').value)||1;
+  settings.daily   = parseFloat(document.getElementById('s-daily').value)||4;
+  settings.target  = parseFloat(document.getElementById('s-target').value)||10;
+  localStorage.setItem('incizo_settings', JSON.stringify(settings));
+  toast('Settings saved ✓', 'success');
+  render();
+}
+
+function updateAbout() {
+  const target = settings.account * settings.target / 100;
+  const dd = settings.account * 6 / 100;
+  document.getElementById('about-account').textContent = '$' + settings.account.toLocaleString();
+  document.getElementById('about-target').textContent = '$' + target.toFixed(0) + ' (' + settings.target + '%)';
+  document.getElementById('about-dd').textContent = '$' + dd.toFixed(0) + ' (6%)';
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
