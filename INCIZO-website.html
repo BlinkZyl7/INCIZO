@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="INCIZO AI — Elite trading intelligence for funded crypto traders. AI watches your chart every 30 seconds. $29.99 one time."/>
+<meta property="og:title" content="INCIZO AI — Cut Through The Noise"/>
+<meta property="og:description" content="AI watches your crypto chart every 30 seconds. Reads 7 indicators. Signals Long, Short or Wait."/>
+<meta name="theme-color" content="#000000"/>
+<title>INCIZO AI — Cut Through The Noise</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --black:   #000000;
+  --bg:      #080808;
+  --bg1:     #0F0F0F;
+  --bg2:     #161616;
+  --bg3:     #1E1E1E;
+  --border:  rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.12);
+  --gold:    #C9A84C;
+  --gold2:   #E8C96A;
+  --gold3:   #F5E0A0;
+  --white:   #F0EDE8;
+  --white2:  #B8B4AE;
+  --gray:    #6B6760;
+  --dim:     #2E2C2A;
+  --green:   #2ECC71;
+  --red:     #E74C3C;
+  --font-d:  'DM Sans', sans-serif;
+  --font-m:  'DM Mono', monospace;
+  --font-b:  'Bebas Neue', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-d);
+  overflow-x: hidden;
+  cursor: default;
+}
+
+::selection { background: var(--gold); color: #000; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 2px; }
+
+/* ── NOISE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.4;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 64px;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+
+.nav-logo-mark {
+  width: 32px; height: 32px;
+  background: var(--white);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.nav-logo-mark svg { width: 18px; height: 18px; }
+
+.nav-logo-text {
+  font-family: var(--font-b);
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: var(--white);
+}
+
+.nav-logo-ai {
+  font-family: var(--font-m);
+  font-size: 11px;
+  color: var(--gold);
+  border: 1px solid rgba(201,168,76,0.3);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.nav-right { display: flex; align-items: center; gap: 16px; }
+
+.nav-link {
+  font-size: 13px; font-weight: 500;
+  color: var(--gray); text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-link:hover { color: var(--white); }
+
+.nav-cta {
+  background: var(--gold);
+  color: #000;
+  font-family: var(--font-d);
+  font-weight: 700; font-size: 13px;
+  padding: 8px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.nav-cta:hover {
+  background: var(--gold2);
+  transform: translateY(-1px);
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 120px 40px 80px;
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Grid background */
+.hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+}
+
+/* Radial glow */
+.hero-glow {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-m); font-size: 11px;
+  color: var(--gold); letter-spacing: 2px;
+  text-transform: uppercase;
+  border: 1px solid rgba(201,168,76,0.25);
+  background: rgba(201,168,76,0.05);
+  padding: 6px 16px; border-radius: 99px;
+  margin-bottom: 32px;
+  position: relative; z-index: 1;
+  animation: fadeUp 0.8s ease both;
+}
+
+.eyebrow-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+
+.hero h1 {
+  font-family: var(--font-b);
+  font-size: clamp(72px, 12vw, 160px);
+  line-height: 0.9;
+  letter-spacing: 4px;
+  color: var(--white);
+  position: relative; z-index: 1;
+  animation: fadeUp 0.8s 0.1s ease both;
+}
+
+.hero h1 span {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--gold);
+}
+
+.hero-sub {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--white2);
+  max-width: 520px;
+  line-height: 1.6;
+  margin: 24px auto 40px;
+  font-weight: 300;
+  position: relative; z-index: 1;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+
+.hero-btns {
+  display: flex; gap: 14px;
+  justify-content: center; flex-wrap: wrap;
+  position: relative; z-index: 1;
+  animation: fadeUp 0.8s 0.3s ease both;
+}
+
+.btn-gold {
+  background: var(--gold);
+  color: #000;
+  font-family: var(--font-d);
+  font-weight: 700; font-size: 15px;
+  padding: 14px 32px; border-radius: 8px;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all 0.2s;
+}
+.btn-gold:hover {
+  background: var(--gold2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(201,168,76,0.3);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--white2);
+  font-family: var(--font-d);
+  font-weight: 500; font-size: 15px;
+  padding: 14px 32px; border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid var(--border2);
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all 0.2s;
+}
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+.hero-price {
+  font-family: var(--font-m); font-size: 12px;
+  color: var(--gray); margin-top: 20px;
+  position: relative; z-index: 1;
+  animation: fadeUp 0.8s 0.4s ease both;
+}
+
+.hero-price strong { color: var(--gold); font-size: 16px; }
+
+/* Scroll indicator */
+.scroll-hint {
+  position: absolute; bottom: 40px; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--dim); letter-spacing: 2px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+  animation: fadeUp 1s 0.8s ease both;
+  z-index: 1;
+}
+
+.scroll-line {
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: scrollAnim 2s infinite;
+}
+
+@keyframes scrollAnim {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── PROOF BAR ── */
+.proof {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg1);
+  padding: 20px 40px;
+  display: flex; align-items: center;
+  justify-content: center; gap: 48px;
+  flex-wrap: wrap;
+}
+
+.proof-item {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-m); font-size: 12px;
+  color: var(--gray); letter-spacing: 0.5px;
+}
+
+.proof-item strong {
+  font-size: 18px; font-weight: 500;
+  color: var(--gold);
+}
+
+/* ── SECTIONS ── */
+section { padding: 120px 40px; }
+
+.section-label {
+  font-family: var(--font-m); font-size: 10px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.section-label::before {
+  content: '';
+  width: 24px; height: 1px;
+  background: var(--gold);
+}
+
+.section-title {
+  font-family: var(--font-b);
+  font-size: clamp(40px, 6vw, 80px);
+  line-height: 0.95;
+  letter-spacing: 2px;
+  color: var(--white);
+  margin-bottom: 20px;
+}
+
+.section-title span { color: var(--gold); }
+
+.section-sub {
+  font-size: 17px; font-weight: 300;
+  color: var(--white2); max-width: 480px;
+  line-height: 1.6;
+}
+
+/* ── HOW IT WORKS ── */
+.how { background: var(--bg1); }
+.how-inner { max-width: 1100px; margin: 0 auto; }
+
+.how-top {
+  display: flex; justify-content: space-between;
+  align-items: flex-end; margin-bottom: 64px;
+  flex-wrap: wrap; gap: 24px;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2px;
+}
+
+.step {
+  background: var(--bg2);
+  padding: 40px 32px;
+  position: relative;
+  transition: background 0.2s;
+}
+.step:hover { background: var(--bg3); }
+
+.step-num {
+  font-family: var(--font-b);
+  font-size: 64px; line-height: 1;
+  color: var(--dim); margin-bottom: 24px;
+  letter-spacing: 2px;
+}
+
+.step-title {
+  font-size: 17px; font-weight: 600;
+  color: var(--white); margin-bottom: 10px;
+}
+
+.step-desc {
+  font-size: 14px; font-weight: 300;
+  color: var(--white2); line-height: 1.6;
+}
+
+.step-code {
+  margin-top: 16px;
+  background: var(--black);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-family: var(--font-m);
+  font-size: 12px; color: var(--gold);
+  display: inline-block;
+}
+
+/* ── TERMINAL DEMO ── */
+.demo { max-width: 900px; margin: 0 auto; }
+.demo-inner { max-width: 900px; margin: 0 auto; }
+
+.terminal {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-top: 48px;
+}
+
+.terminal-bar {
+  background: var(--bg2);
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.t-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+.terminal-body {
+  padding: 28px;
+  font-family: var(--font-m);
+  font-size: 13px;
+  line-height: 2;
+}
+
+.t-gold   { color: var(--gold2); font-weight: 500; }
+.t-green  { color: #2ECC71; }
+.t-red    { color: #E74C3C; }
+.t-amber  { color: #F39C12; }
+.t-white  { color: var(--white); }
+.t-dim    { color: var(--gray); }
+.t-sep    { color: var(--dim); }
+.t-blink  { animation: blink 1s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ── FEATURES ── */
+.features-section { background: var(--bg1); }
+.features-inner { max-width: 1100px; margin: 0 auto; }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2px;
+  margin-top: 64px;
+}
+
+.feature {
+  background: var(--bg2);
+  padding: 40px 36px;
+  position: relative; overflow: hidden;
+  transition: background 0.2s;
+}
+.feature:hover { background: var(--bg3); }
+
+.feature::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+.feature:hover::before { transform: scaleX(1); }
+
+.feature-num {
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--gold); letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+.feature-title {
+  font-size: 18px; font-weight: 600;
+  color: var(--white); margin-bottom: 12px;
+}
+
+.feature-desc {
+  font-size: 14px; font-weight: 300;
+  color: var(--white2); line-height: 1.7;
+}
+
+/* ── INDICATORS ── */
+.indicators-section { max-width: 1100px; margin: 0 auto; }
+
+.ind-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  margin-top: 64px;
+}
+
+.ind-card {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.ind-card:hover { border-color: rgba(201,168,76,0.3); background: var(--bg2); }
+
+.ind-rank {
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--black); background: var(--gold);
+  padding: 2px 8px; border-radius: 3px;
+  display: inline-block; margin-bottom: 14px;
+  font-weight: 500;
+}
+
+.ind-name {
+  font-size: 16px; font-weight: 600;
+  color: var(--white); margin-bottom: 6px;
+}
+
+.ind-signal {
+  font-size: 12px; color: var(--gold);
+  font-family: var(--font-m);
+  margin-bottom: 12px;
+}
+
+.ind-desc {
+  font-size: 13px; color: var(--white2);
+  font-weight: 300; line-height: 1.6;
+}
+
+/* ── PRICING ── */
+.pricing-section {
+  background: var(--bg1);
+  text-align: center;
+}
+
+.pricing-inner { max-width: 520px; margin: 0 auto; }
+
+.price-card {
+  background: var(--bg2);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 16px;
+  padding: 52px 48px;
+  margin-top: 48px;
+  position: relative; overflow: hidden;
+}
+
+.price-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold2), var(--gold));
+}
+
+.price-badge {
+  display: inline-block;
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--black); background: var(--gold);
+  padding: 4px 12px; border-radius: 4px;
+  letter-spacing: 1px; margin-bottom: 24px;
+  font-weight: 500;
+}
+
+.price-name {
+  font-family: var(--font-b);
+  font-size: 28px; letter-spacing: 2px;
+  color: var(--white); margin-bottom: 12px;
+}
+
+.price-amount {
+  display: flex; align-items: baseline;
+  justify-content: center; gap: 4px;
+  margin: 16px 0;
+}
+
+.price-curr {
+  font-family: var(--font-m);
+  font-size: 20px; color: var(--white2);
+}
+
+.price-num {
+  font-family: var(--font-b);
+  font-size: 80px; line-height: 1;
+  color: var(--gold); letter-spacing: -2px;
+}
+
+.price-period {
+  font-size: 13px; color: var(--gray);
+  font-family: var(--font-m);
+}
+
+.price-desc {
+  font-size: 14px; color: var(--white2);
+  font-weight: 300; margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.price-features {
+  text-align: left;
+  display: flex; flex-direction: column; gap: 12px;
+  margin-bottom: 36px;
+}
+
+.pf {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 14px; color: var(--white2);
+}
+
+.pf-check { color: var(--gold); font-size: 16px; flex-shrink: 0; }
+
+.price-cta {
+  display: block; width: 100%;
+  background: var(--gold);
+  color: #000;
+  font-family: var(--font-d);
+  font-weight: 700; font-size: 16px;
+  padding: 16px;
+  border-radius: 10px;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.2s;
+  letter-spacing: 0.2px;
+}
+.price-cta:hover {
+  background: var(--gold2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(201,168,76,0.3);
+}
+
+.price-note {
+  font-family: var(--font-m); font-size: 11px;
+  color: var(--dim); margin-top: 16px;
+}
+
+/* ── FAQ ── */
+.faq-section { max-width: 720px; margin: 0 auto; }
+
+.faq-list { margin-top: 48px; }
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: 24px 0;
+}
+
+.faq-q {
+  font-size: 15px; font-weight: 600;
+  color: var(--white); margin-bottom: 12px;
+  cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+.faq-q::after {
+  content: '+';
+  color: var(--gold); font-size: 20px;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.faq-item.open .faq-q::after { transform: rotate(45deg); }
+
+.faq-a {
+  font-size: 14px; font-weight: 300;
+  color: var(--white2); line-height: 1.7;
+  display: none;
+}
+
+.faq-item.open .faq-a { display: block; }
+
+/* ── CTA SECTION ── */
+.cta-section {
+  background: var(--bg1);
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.cta-inner { max-width: 700px; margin: 0 auto; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--black);
+  border-top: 1px solid var(--border);
+  padding: 40px;
+  display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+
+.footer-logo-text {
+  font-family: var(--font-b);
+  font-size: 18px; letter-spacing: 2px;
+  color: var(--white);
+}
+
+.footer-links {
+  display: flex; gap: 24px; flex-wrap: wrap;
+}
+
+.footer-link {
+  font-family: var(--font-m); font-size: 11px;
+  color: var(--gray); text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+}
+.footer-link:hover { color: var(--gold); }
+
+.footer-copy {
+  font-family: var(--font-m); font-size: 11px;
+  color: var(--dim); letter-spacing: 0.5px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nav-link { display: none; }
+  section { padding: 80px 20px; }
+  .hero { padding: 100px 20px 60px; }
+  .proof { padding: 20px; gap: 24px; }
+  .how-top { flex-direction: column; }
+  .terminal-body { padding: 20px; font-size: 11px; }
+  footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 18 18" fill="none">
+        <polygon points="1,9 7,3 10,9 7,15" fill="black"/>
+        <line x1="10" y1="9" x2="17" y2="9" stroke="black" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="14" y1="5.5" x2="17" y2="9" stroke="black" stroke-width="2" stroke-linecap="round"/>
+        <line x1="14" y1="12.5" x2="17" y2="9" stroke="black" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="nav-logo-text">INCIZO</span>
+    <span class="nav-logo-ai">AI</span>
+  </a>
+  <div class="nav-right">
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#indicators" class="nav-link">Indicators</a>
+    <a href="#pricing" class="nav-link">Pricing</a>
+    <a href="#faq" class="nav-link">FAQ</a>
+    <a href="https://whop.com/incizo-ai/" target="_blank" class="nav-cta">Get Access — $29.99</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+
+  <div class="hero-eyebrow">
+    <div class="eyebrow-dot"></div>
+    Funded Trader Edition — Live Now
+  </div>
+
+  <h1>CUT<br/><span>THROUGH</span><br/>THE NOISE</h1>
+
+  <p class="hero-sub">
+    AI watches your crypto chart every 30 seconds.
+    Reads 7 indicators. Signals Long, Short or Wait.
+    Elite trader AI sees your screen live.
+  </p>
+
+  <div class="hero-btns">
+    <a href="https://whop.com/incizo-ai/" target="_blank" class="btn-gold">
+      ⚡ Get INCIZO AI
+    </a>
+    <a href="#features" class="btn-ghost">
+      See How It Works
+    </a>
+  </div>
+
+  <p class="hero-price">One-time purchase · <strong>$29.99</strong> · No subscription ever</p>
+
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- PROOF BAR -->
+<div class="proof">
+  <div class="proof-item"><strong>7</strong> Indicators Read Per Scan</div>
+  <div class="proof-item"><strong>30s</strong> Scan Interval</div>
+  <div class="proof-item"><strong>Claude AI</strong> Powered</div>
+  <div class="proof-item"><strong>$29.99</strong> One Time</div>
+  <div class="proof-item"><strong>Windows</strong> PC App</div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-inner">
+    <div class="how-top">
+      <div>
+        <div class="section-label">How It Works</div>
+        <h2 class="section-title">Three steps.<br/><span>That's it.</span></h2>
+      </div>
+      <p class="section-sub">No code. No complexity. Download, paste your API key, and start watching.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title">Download & Install</div>
+        <div class="step-desc">Double-click INSTALL.bat and everything sets up automatically. Python required — free download from python.org.</div>
+        <div class="step-code">INSTALL.bat → done</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title">Get Your AI Key</div>
+        <div class="step-desc">Sign up at console.anthropic.com. Add $5 in credits — covers ~300 scans. That's weeks of daily sessions.</div>
+        <div class="step-code">~$0.03 per scan</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title">Start Watching</div>
+        <div class="step-desc">Open your chart, paste your key in Settings, click Start Watching. INCIZO reads your chart every 30 seconds automatically.</div>
+        <div class="step-code">▶ Start Watching</div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-title">Trade With Clarity</div>
+        <div class="step-desc">INCIZO signals Long, Short, or Wait. You execute. No emotion. No guesswork. Just clean setups when the indicators align.</div>
+        <div class="step-code">BIAS: LONG ↑</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TERMINAL DEMO -->
+<section style="padding: 80px 40px; background: var(--black);">
+  <div class="demo-inner" style="max-width:860px; margin: 0 auto;">
+    <div class="section-label">Live Output</div>
+    <h2 class="section-title">What you see<br/><span>every 30 seconds</span></h2>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="t-dot" style="background:#FF453A"></div>
+        <div class="t-dot" style="background:#FFD60A"></div>
+        <div class="t-dot" style="background:#30D158"></div>
+        <span style="font-family:var(--font-m);font-size:11px;color:var(--gray);margin-left:10px">INCIZO AI v4.0 — SCAN #47 · 14:23:51 · BTC/USD 5M</span>
+      </div>
+      <div class="terminal-body">
+        <span class="t-sep">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span><br/>
+        <span class="t-gold">  SCAN #47  ·  14:23:51  ·  BTC/USD  5M</span><br/>
+        <span class="t-sep">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span><br/><br/>
+        <span class="t-red">BIAS: SHORT</span><br/>
+        <span class="t-gold">CONFIDENCE: HIGH</span><br/>
+        <span class="t-white">PRICE: $77,428</span><br/><br/>
+        <span class="t-sep">━━━ INDICATORS ━━━</span><br/>
+        <span class="t-red">RSI: 74.6 — OVERBOUGHT ⚠</span><br/>
+        <span class="t-red">EMA: 9 below 21 — bearish momentum</span><br/>
+        <span class="t-red">VWAP: Price below — bearish bias</span><br/>
+        <span class="t-white">STRUCTURE: Lower highs forming</span><br/>
+        <span class="t-amber">PATTERN: Bearish engulfing candle</span><br/>
+        <span class="t-white">VOLUME: High — move confirmed</span><br/><br/>
+        <span class="t-sep">━━━ SETUP ━━━</span><br/>
+        <span class="t-white">ENTRY: $77,350</span><br/>
+        <span class="t-white">STOP LOSS: $77,750</span><br/>
+        <span class="t-white">TARGET: $76,800</span><br/>
+        <span class="t-white">R:R: 1:1.9</span><br/><br/>
+        <span class="t-gold">━━━ VERDICT ━━━</span><br/>
+        <span class="t-white">RSI overbought at resistance. 5 of 7 indicators bearish.</span><br/>
+        <span class="t-white">Wait for 5M candle close below $77,350 then SHORT.</span><br/>
+        <span class="t-amber">Do not enter mid-candle — wait for confirmation.</span><br/><br/>
+        <span class="t-dim">Next scan in 30s <span class="t-blink">█</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="features-inner">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Everything you need.<br/><span>Nothing you don't.</span></h2>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-num">01 — WATCH</div>
+        <div class="feature-title">Live AI Chart Analysis</div>
+        <div class="feature-desc">Captures your screen every 30 seconds and sends it to Claude AI. Returns full analysis — Bias, RSI, Entry, SL, TP, and Confidence level. Sound alert when signal fires.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">02 — MARCUS</div>
+        <div class="feature-title">Elite Trader AI Mentor</div>
+        <div class="feature-desc">Marcus Reed — $1M+ in profits, 10 years trading. He sees your screen every time you message him. Ask him anything about your chart, setup, or mindset. He answers like a pro sitting next to you.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">03 — CHARTS</div>
+        <div class="feature-title">Multi-Pair Chart Viewer</div>
+        <div class="feature-desc">Open any pair on any timeframe in TradingView with one click. BTC, ETH, SOL, Gold, NAS100 and more. Switch pairs instantly without leaving the app.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">04 — DASHBOARD</div>
+        <div class="feature-title">Challenge Progress Tracker</div>
+        <div class="feature-desc">Log every trade. Track your P&L, win rate, daily drawdown, and challenge progress. Know exactly where you stand at all times. Never accidentally breach a limit again.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">05 — RISK</div>
+        <div class="feature-title">Position Size Calculator</div>
+        <div class="feature-desc">Enter your entry, SL, and TP. Instantly get your exact position size, risk in dollars, and R:R ratio. Built-in warnings for funded account rules.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-num">06 — TWITTER</div>
+        <div class="feature-title">Built-In Tweet Composer</div>
+        <div class="feature-desc">Post signals and updates to Twitter directly from the app. Pre-written templates for funded trader content. One click opens Twitter with your message pre-filled.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INDICATORS -->
+<section id="indicators" style="padding: 120px 40px; background: var(--black);">
+  <div class="indicators-section">
+    <div class="section-label">Intelligence</div>
+    <h2 class="section-title">7 indicators.<br/><span>One verdict.</span></h2>
+    <p class="section-sub" style="margin-bottom: 0;">INCIZO only signals when 3 or more align. No noise. No guessing.</p>
+    <div class="ind-grid">
+      <div class="ind-card">
+        <div class="ind-rank">01</div>
+        <div class="ind-name">RSI (14)</div>
+        <div class="ind-signal">Primary momentum</div>
+        <div class="ind-desc">Overbought above 70. Oversold below 30. Divergence signals reversal before price moves.</div>
+      </div>
+      <div class="ind-card">
+        <div class="ind-rank">02</div>
+        <div class="ind-name">EMA 9 / EMA 21</div>
+        <div class="ind-signal">Trend direction</div>
+        <div class="ind-desc">Fast/slow crossover. 9 above 21 = bullish. 9 below 21 = bearish. Never trade against it.</div>
+      </div>
+      <div class="ind-card">
+        <div class="ind-rank">03</div>
+        <div class="ind-name">VWAP</div>
+        <div class="ind-signal">Institutional benchmark</div>
+        <div class="ind-desc">Where institutions buy and sell. Price above = bullish. Below = bearish. Most reliable in session open.</div>
+      </div>
+      <div class="ind-card">
+        <div class="ind-rank">04</div>
+        <div class="ind-name">Support & Resistance</div>
+        <div class="ind-signal">Key price levels</div>
+        <div class="ind-desc">Horizontal levels where price reverses. Round numbers are the strongest on BTC. Trade the reaction.</div>
+      </div>
+      <div class="ind-card">
+        <div class="ind-rank">05</div>
+        <div class="ind-name">Volume</div>
+        <div class="ind-signal">Confirmation</div>
+        <div class="ind-desc">High volume confirms moves. Low volume breakouts are almost always fake. Never enter without confirmation.</div>
+      </div>
+      <div class="ind-card">
+        <div class="ind-rank">06</div>
+        <div class="ind-name">Candle Patterns</div>
+        <div class="ind-signal">Entry timing</div>
+        <div class="ind-desc">Engulfing, pin bar, doji, inside bar. On 5M only engulfing and pin bars are reliable. Everything else is noise.</div>
+      </div>
+      <div class="ind-card">
+        <div class="ind-rank">07</div>
+        <div class="ind-name">Market Structure</div>
+        <div class="ind-signal">Higher TF context</div>
+        <div class="ind-desc">Higher highs and lows = uptrend. Lower highs and lows = downtrend. Always check 1H before any 5M trade.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+    <div class="section-label" style="justify-content:center">Pricing</div>
+    <h2 class="section-title">One price.<br/><span>Yours forever.</span></h2>
+    <div class="price-card">
+      <div class="price-badge">INCIZO AI v4.0</div>
+      <div class="price-name">COMPLETE PACKAGE</div>
+      <div class="price-amount">
+        <span class="price-curr">$</span>
+        <span class="price-num">29</span>
+        <div>
+          <div style="font-family:var(--font-m);font-size:13px;color:var(--white2)">.99</div>
+          <div class="price-period">one time</div>
+        </div>
+      </div>
+      <p class="price-desc">Pay once. Use forever. No monthly fees. No subscription. Ever.</p>
+      <div class="price-features">
+        <div class="pf"><span class="pf-check">✦</span> Live AI chart analysis every 30 seconds</div>
+        <div class="pf"><span class="pf-check">✦</span> Marcus Reed — elite trader AI mentor</div>
+        <div class="pf"><span class="pf-check">✦</span> 12 pairs + 8 timeframes supported</div>
+        <div class="pf"><span class="pf-check">✦</span> Challenge progress tracker</div>
+        <div class="pf"><span class="pf-check">✦</span> Risk & position size calculator</div>
+        <div class="pf"><span class="pf-check">✦</span> Trade journal with P&L tracking</div>
+        <div class="pf"><span class="pf-check">✦</span> Built-in Twitter composer</div>
+        <div class="pf"><span class="pf-check">✦</span> Works on CLEO, TradingView, Binance + more</div>
+        <div class="pf"><span class="pf-check">✦</span> Lifetime updates included</div>
+      </div>
+      <a href="https://whop.com/incizo-ai/" target="_blank" class="price-cta">
+        ⚡ Get Instant Access
+      </a>
+      <p class="price-note">Instant download · Windows 10/11 · ~$0.03/scan API cost</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="padding: 120px 40px; background: var(--black);">
+  <div class="faq-section">
+    <div class="section-label">FAQ</div>
+    <h2 class="section-title">Common<br/><span>questions.</span></h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">What exactly is INCIZO AI?</div>
+        <div class="faq-a">INCIZO AI is a desktop app that watches your crypto trading chart every 30 seconds using Claude AI. It reads 7 indicators at once and tells you exactly when to go Long, Short, or Wait.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How does it work?</div>
+        <div class="faq-a">You run the app on your PC alongside your trading platform. Every 30 seconds it captures your screen, sends it to Claude AI, and returns a full analysis with entry, stop loss, and take profit levels.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Does it trade automatically for me?</div>
+        <div class="faq-a">No. INCIZO gives you the signal — you make the decision and execute the trade. This keeps you in full control and compliant with funded account rules.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What platforms does it work with?</div>
+        <div class="faq-a">Any platform visible on your screen — CLEO, TradingView, Binance, Bybit, MetaTrader and more. If you can see it on your screen, INCIZO can read it.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is the ongoing API cost?</div>
+        <div class="faq-a">About $0.03 per scan using Claude Sonnet. $10 in API credits covers roughly 330 scans — that's weeks of daily trading sessions at a 60 second interval.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Do I need to know how to code?</div>
+        <div class="faq-a">No. Just download, run INSTALL.bat, paste your Claude API key in Settings, and click Start Watching. Setup takes under 10 minutes.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is included in the $29.99?</div>
+        <div class="faq-a">The AI watcher app, trading dashboard, risk calculator, trade journal, Twitter composer, full setup guide, and lifetime updates. Everything in one download.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Is there a free trial?</div>
+        <div class="faq-a">No free trial. All sales are final.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <div class="section-label" style="justify-content:center">Start Today</div>
+    <h2 class="section-title">Stop guessing.<br/><span>Start knowing.</span></h2>
+    <p style="font-size:17px;font-weight:300;color:var(--white2);max-width:440px;margin:20px auto 40px;line-height:1.6;">
+      Join funded traders using INCIZO AI to make sharper, faster, more confident trading decisions.
+    </p>
+    <a href="https://whop.com/incizo-ai/" target="_blank" class="btn-gold" style="font-size:17px;padding:16px 40px;">
+      ⚡ Get INCIZO AI — $29.99
+    </a>
+    <p style="font-family:var(--font-m);font-size:12px;color:var(--dim);margin-top:16px;">
+      One-time · Instant download · Lifetime updates
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 18 18" fill="none">
+        <polygon points="1,9 7,3 10,9 7,15" fill="black"/>
+        <line x1="10" y1="9" x2="17" y2="9" stroke="black" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="14" y1="5.5" x2="17" y2="9" stroke="black" stroke-width="2" stroke-linecap="round"/>
+        <line x1="14" y1="12.5" x2="17" y2="9" stroke="black" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="footer-logo-text">INCIZO</span>
+  </a>
+  <div class="footer-links">
+    <a href="#how" class="footer-link">HOW IT WORKS</a>
+    <a href="#features" class="footer-link">FEATURES</a>
+    <a href="#pricing" class="footer-link">PRICING</a>
+    <a href="#faq" class="footer-link">FAQ</a>
+    <a href="https://whop.com/incizo-ai/" target="_blank" class="footer-link">BUY NOW</a>
+  </div>
+  <p class="footer-copy">© 2026 INCIZO AI · For analysis purposes only · Trading involves risk · All sales final</p>
+</footer>
+
+<script>
+// FAQ accordion
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+// Smooth scroll for nav links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// Fade in on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.step, .feature, .ind-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
